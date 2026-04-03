@@ -1,0 +1,10 @@
+.DS_Store
+.env
+
+# Docker volumes/cache
+backend/log/*
+backend/tmp/*
+backend/storage/*
+backend/.bundle
+backend/vendor/bundle
+frontend/node_modules

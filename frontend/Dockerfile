@@ -1,7 +1,13 @@
-FROM node:22-alpine
+FROM node:24
 
 WORKDIR /app
 
-EXPOSE 5173
+COPY package*.json ./
 
-CMD ["sh", "-lc", "if [ ! -f package.json ]; then npx --yes create-vite@latest . --template react-ts --force; fi && npm install && npm run dev -- --host 0.0.0.0 --port 5173"]
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

@@ -1,13 +1,13 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import prettier from "eslint-config-prettier/flat";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
+  prettier,
+  // eslint-config-nextのデフォルト無視設定をオーバーライドします。
   globalIgnores([
-    // Default ignores of eslint-config-next:
+    // eslint-config-nextのデフォルト無視設定：
     ".next/**",
     "out/**",
     "build/**",

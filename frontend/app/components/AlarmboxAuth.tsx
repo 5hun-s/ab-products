@@ -1,19 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ALARMBOX_AUTH_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox`;
 const CALLBACK_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox/callback`;
 
+function isAuthenticated(): boolean {
+  const token = localStorage.getItem("alarmbox_access_token");
+  if (!token) return false;
+  const expiresAt = localStorage.getItem("alarmbox_expires_at");
+  if (expiresAt && Date.now() > Number(expiresAt)) return false;
+  return true;
+}
+
 export default function AlarmboxAuth() {
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"idle" | "waiting" | "loading" | "success">("idle");
+
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      setStep("success");
+    }
+  }, []);
 
   function openAuthWindow() {
     window.open(ALARMBOX_AUTH_URL, "_blank");
     setStep("waiting");
     setError(null);
+  }
+
+  function disconnect() {
+    localStorage.removeItem("alarmbox_access_token");
+    localStorage.removeItem("alarmbox_refresh_token");
+    localStorage.removeItem("alarmbox_expires_at");
+    setStep("idle");
   }
 
   async function submitCode() {
@@ -56,15 +78,16 @@ export default function AlarmboxAuth() {
 
   return (
     <div className="flex flex-col gap-4">
-      <button
-        onClick={openAuthWindow}
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-white font-medium transition-colors hover:bg-blue-700"
-      >
-        アラームボックスと連携する
-      </button>
-
       {step === "success" ? (
-        <p className="text-sm font-medium text-green-600">アラームボックスと連携しました！</p>
+        <div className="flex items-center gap-4">
+          <p className="text-sm font-medium text-green-600">アラームボックスと連携済みです</p>
+          <button
+            onClick={disconnect}
+            className="text-sm text-red-500 underline hover:text-red-700"
+          >
+            連携を解除
+          </button>
+        </div>
       ) : step === "waiting" || step === "loading" ? (
         <div className="flex flex-col gap-2">
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -89,8 +112,14 @@ export default function AlarmboxAuth() {
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
-      ) : null}
-
+      ) : (
+        <button
+          onClick={openAuthWindow}
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-white font-medium transition-colors hover:bg-blue-700"
+        >
+          アラームボックスと連携する
+        </button>
+      )}
     </div>
   );
 }

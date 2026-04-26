@@ -48,6 +48,7 @@ export default function AlarmboxAuth() {
       }
 
       setStep("success");
+      window.dispatchEvent(new Event("alarmbox-auth-success"));
     } catch {
       setError("通信エラーが発生しました");
       setStep("waiting");

@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     post "alarmbox/callback", to: "alarmbox#callback"
   end
 
+  get "exams", to: "exam#index"
+
   # Defines the root path route ("/")
   # root "posts#index"
 end

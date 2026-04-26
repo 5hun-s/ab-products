@@ -1,4 +1,4 @@
-.PHONY: up down build be fe
+.PHONY: up down build be fe sh rc
 
 up:
 	docker compose up -d
@@ -14,3 +14,6 @@ be:
 
 fe:
 	docker compose exec frontend sh
+
+rails_c:
+	docker compose exec backend bin/rails console

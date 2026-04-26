@@ -1,24 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Step, isAuthenticated } from "./alarmbox-auth";
 
 const ALARMBOX_AUTH_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox`;
 const CALLBACK_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox/callback`;
 
 export default function AlarmboxAuth() {
   const [code, setCode] = useState("");
-  const [step, setStep] = useState<"idle" | "waiting" | "loading" | "success">("idle");
+  const [step, setStep] = useState(Step.Idle);
+
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      setStep(Step.Success);
+    }
+  }, []);
 
   function openAuthWindow() {
     window.open(ALARMBOX_AUTH_URL, "_blank");
-    setStep("waiting");
+    setStep(Step.Waiting);
     setError(null);
+  }
+
+  function disconnect() {
+    localStorage.removeItem("alarmbox_access_token");
+    localStorage.removeItem("alarmbox_refresh_token");
+    localStorage.removeItem("alarmbox_expires_at");
+    setStep(Step.Idle);
   }
 
   async function submitCode() {
     if (!code.trim()) return;
-    setStep("loading");
+    setStep(Step.Loading);
     setError(null);
 
     try {
@@ -31,7 +46,7 @@ export default function AlarmboxAuth() {
 
       if (!res.ok) {
         setError(data.error || "認証に失敗しました");
-        setStep("waiting");
+        setStep(Step.Waiting);
         return;
       }
 
@@ -47,26 +62,27 @@ export default function AlarmboxAuth() {
         localStorage.setItem("alarmbox_expires_at", String(Date.now() + Number(data.expires_in) * 1000));
       }
 
-      setStep("success");
+      setStep(Step.Success);
       window.dispatchEvent(new Event("alarmbox-auth-success"));
     } catch {
       setError("通信エラーが発生しました");
-      setStep("waiting");
+      setStep(Step.Waiting);
     }
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <button
-        onClick={openAuthWindow}
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-white font-medium transition-colors hover:bg-blue-700"
-      >
-        アラームボックスと連携する
-      </button>
-
-      {step === "success" ? (
-        <p className="text-sm font-medium text-green-600">アラームボックスと連携しました！</p>
-      ) : step === "waiting" || step === "loading" ? (
+      {step === Step.Success ? (
+        <div className="flex items-center gap-4">
+          <p className="text-sm font-medium text-green-600">アラームボックスと連携済みです</p>
+          <button
+            onClick={disconnect}
+            className="text-sm text-red-500 underline hover:text-red-700"
+          >
+            連携を解除
+          </button>
+        </div>
+      ) : step === Step.Waiting || step === Step.Loading ? (
         <div className="flex flex-col gap-2">
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             認証画面で表示されたコードを貼り付けてください
@@ -78,20 +94,26 @@ export default function AlarmboxAuth() {
               onChange={(e) => setCode(e.target.value)}
               placeholder="認可コード"
               className="flex-1 h-10 rounded-lg border border-zinc-300 px-3 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
-              disabled={step === "loading"}
+              disabled={step === Step.Loading}
             />
             <button
               onClick={submitCode}
-              disabled={step === "loading" || !code.trim()}
+              disabled={step === Step.Loading || !code.trim()}
               className="h-10 rounded-lg bg-blue-600 px-4 text-sm text-white font-medium transition-colors hover:bg-blue-700 disabled:opacity-50"
             >
-              {step === "loading" ? "処理中..." : "送信"}
+              {step === Step.Loading ? "処理中..." : "送信"}
             </button>
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
-      ) : null}
-
+      ) : (
+        <button
+          onClick={openAuthWindow}
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-white font-medium transition-colors hover:bg-blue-700"
+        >
+          アラームボックスと連携する
+        </button>
+      )}
     </div>
   );
 }

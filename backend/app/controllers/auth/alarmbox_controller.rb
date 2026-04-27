@@ -1,15 +1,15 @@
 require "net/http"
 
 class Auth::AlarmboxController < ApplicationController
-  AUTHORIZE_URL = "#{ENV.fetch("ALARMBOX_API_BASE_URL")}/oauth/authorize"
-  TOKEN_URL = "#{ENV.fetch("ALARMBOX_API_BASE_URL")}/oauth/token"
+  AUTHORIZE_URL = "#{Rails.application.credentials.alarmbox[:api_base_url]}/oauth/authorize"
+  TOKEN_URL = "#{Rails.application.credentials.alarmbox[:api_base_url]}/oauth/token"
 
   # GET /auth/alarmbox
   # アラームボックスの認証URLにリダイレクト
   def authorize
     params = {
-      client_id: ENV.fetch("ALARMBOX_CLIENT_ID"),
-      redirect_uri: ENV.fetch("ALARMBOX_CALLBACK_URI"),
+      client_id: Rails.application.credentials.alarmbox[:client_id],
+      redirect_uri: Rails.application.credentials.alarmbox[:callback_uri],
       response_type: "code",
       scope: "read"
     }
@@ -45,10 +45,10 @@ class Auth::AlarmboxController < ApplicationController
     request = Net::HTTP::Post.new(uri.path)
     request.set_form_data(
       grant_type: "authorization_code",
-      client_id: ENV.fetch("ALARMBOX_CLIENT_ID"),
-      client_secret: ENV.fetch("ALARMBOX_CLIENT_SECRET"),
+      client_id: Rails.application.credentials.alarmbox[:client_id],
+      client_secret: Rails.application.credentials.alarmbox[:client_secret],
       code: code,
-      redirect_uri: ENV.fetch("ALARMBOX_CALLBACK_URI")
+      redirect_uri: Rails.application.credentials.alarmbox[:callback_uri]
     )
     http.request(request)
   end

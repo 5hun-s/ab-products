@@ -1,7 +1,7 @@
 require "net/http"
 
 class ExamController < ApplicationController
-  EXAMS_URL = "#{ENV.fetch("ALARMBOX_API_BASE_URL")}/gt/v1/exams"
+  EXAMS_URL = "#{Rails.application.credentials.alarmbox[:api_base_url]}/gt/v1/exams"
 
   # GET /exams
   # アラームボックスから審査一覧を取得

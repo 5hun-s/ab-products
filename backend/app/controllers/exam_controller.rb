@@ -31,7 +31,7 @@ class ExamController < ApplicationController
       return
     end
 
-    exam_params = params.expect(exam: [:company_name, :representative_name, :address, :corporation_number, :guarantee_amount_hope])
+    exam_params = params.expect(exam: [ :company_name, :representative_name, :address, :corporation_number, :guarantee_amount_hope ])
 
     response = post_exam(access_token, exam_params.to_h)
     data = JSON.parse(response.body)

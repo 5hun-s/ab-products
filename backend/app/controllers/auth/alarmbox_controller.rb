@@ -11,7 +11,7 @@ class Auth::AlarmboxController < ApplicationController
       client_id: Rails.application.credentials.alarmbox[:client_id],
       redirect_uri: Rails.application.credentials.alarmbox[:callback_uri],
       response_type: "code",
-      scope: "read"
+      scope: "read guarantee_exam:create guarantee_exam:stop guarantee:create guarantee:fulfillment"
     }
     redirect_to "#{AUTHORIZE_URL}?#{params.to_query}", allow_other_host: true
   end

@@ -9,12 +9,20 @@ export default function ExamsPage() {
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
             審査一覧
           </h1>
-          <Link
-            href="/"
-            className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-          >
-            ← Topに戻る
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/exams/new"
+              className="inline-flex h-9 items-center justify-center rounded-full bg-green-600 px-4 text-sm text-white font-medium transition-colors hover:bg-green-700"
+            >
+              + 審査依頼
+            </Link>
+            <Link
+              href="/"
+              className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+            >
+              ← Topに戻る
+            </Link>
+          </div>
         </div>
         <ExamList />
       </main>

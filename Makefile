@@ -19,4 +19,4 @@ rails_c:
 	docker compose exec backend bin/rails console
 
 test:
-	docker compose exec backend bundle exec rspec
+	docker compose exec -e backend bundle exec rspec

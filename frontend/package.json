@@ -27,7 +27,7 @@
     "@testing-library/jest-dom": "^6",
     "@testing-library/user-event": "^14",
     "jest": "^30",
-    "jest-environment-jsdom": "^29",
+    "jest-environment-jsdom": "^30",
     "ts-jest": "^29",
     "eslint": "^10",
     "eslint-config-next": "16.2.4",

@@ -27,7 +27,7 @@ RSpec.describe "Exams", type: :request do
     context "アクセストークンありの場合" do
       before do
         stub_request(:get, /exams/)
-          .to_return(status: 200, body: [exam_response].to_json, headers: { "Content-Type" => "application/json" })
+          .to_return(status: 200, body: [ exam_response ].to_json, headers: { "Content-Type" => "application/json" })
       end
 
       it "200を返す" do

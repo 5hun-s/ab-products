@@ -1,4 +1,4 @@
-.PHONY: up down build be fe sh rc test
+.PHONY: up down build be fe sh rc test rubocop
 
 up:
 	docker compose up -d
@@ -20,3 +20,9 @@ rails_c:
 
 test:
 	docker compose exec backend bundle exec rspec
+
+rubocop:
+	docker compose exec backend bundle exec rubocop
+
+rubocop_fix:
+	docker compose exec backend bundle exec rubocop -A

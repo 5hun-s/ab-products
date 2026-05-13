@@ -76,7 +76,7 @@ describe("AlarmboxAuth", () => {
     });
 
     render(<AlarmboxAuth />);
-    await userEvent.click(screen.getByRole("button", { name: "アラームボックスと連携するのだ" }));
+    await userEvent.click(screen.getByRole("button", { name: "アラームボックスと連携する" }));
     await userEvent.type(screen.getByPlaceholderText("認可コード"), "bad-code");
     await userEvent.click(screen.getByRole("button", { name: "送信" }));
 

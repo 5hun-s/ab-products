@@ -30,7 +30,7 @@
     "jest-environment-jsdom": "^30",
     "ts-jest": "^29",
     "ts-node": "^10",
-    "eslint": "^9",
+    "eslint": "^10",
     "eslint-config-next": "16.2.6",
     "eslint-config-prettier": "^10",
     "prettier": "^3",

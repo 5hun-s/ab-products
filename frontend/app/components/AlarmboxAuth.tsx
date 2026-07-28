@@ -1,19 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Step, isAuthenticated } from "./alarmbox-auth";
 
 const ALARMBOX_AUTH_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox`;
 const CALLBACK_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox/callback`;
 
+function subscribeNever() {
+  return () => {};
+}
+
+function getServerAuthenticated() {
+  return false;
+}
+
 export default function AlarmboxAuth() {
   const [code, setCode] = useState("");
-  const [step, setStep] = useState(Step.Idle);
+  const [manualStep, setStep] = useState<Step | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isAuthenticated()) setStep(Step.Success);
-  }, []);
+  const wasAuthenticated = useSyncExternalStore(subscribeNever, isAuthenticated, getServerAuthenticated);
+  const step = manualStep ?? (wasAuthenticated ? Step.Success : Step.Idle);
 
   function openAuthWindow() {
     window.open(ALARMBOX_AUTH_URL, "_blank");

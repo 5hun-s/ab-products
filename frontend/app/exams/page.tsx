@@ -17,7 +17,7 @@ export default function ExamsPage() {
               + 審査依頼
             </Link>
             <Link
-              href="/"
+              href="/home"
               className="text-sm text-blue-600 hover:underline dark:text-blue-400"
             >
               ← Topに戻る

@@ -75,11 +75,14 @@ export default function AlarmboxAuth() {
   return (
     <div className="flex flex-col gap-4">
       {step === Step.Success ? (
-        <div className="flex items-center gap-4">
-          <p className="text-sm font-medium text-green-600">アラームボックスと連携済みです</p>
+        <div className="flex items-center justify-between gap-4 rounded-xl bg-green-50 px-4 py-3 dark:bg-green-950/40">
+          <p className="flex items-center gap-2 text-sm font-medium text-green-700 dark:text-green-400">
+            <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
+            アラームボックスと連携済みです
+          </p>
           <button
             onClick={disconnect}
-            className="text-sm text-red-500 underline hover:text-red-700"
+            className="text-sm text-zinc-500 underline hover:text-red-600 dark:text-zinc-400"
           >
             連携を解除
           </button>
@@ -111,7 +114,7 @@ export default function AlarmboxAuth() {
       ) : (
         <button
           onClick={openAuthWindow}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-white font-medium transition-colors hover:bg-blue-700"
+          className="inline-flex h-9 w-fit shrink-0 items-center justify-center gap-2 self-start rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-700"
         >
           アラームボックスと連携する
         </button>

@@ -27,7 +27,7 @@ export default function ExamButton() {
     <button
       onClick={() => router.push("/exams")}
       disabled={!isAuthenticated}
-      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-green-600 px-6 text-white font-medium transition-colors hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-green-600 px-4 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
       審査一覧
     </button>

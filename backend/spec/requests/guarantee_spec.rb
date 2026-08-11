@@ -24,7 +24,7 @@ RSpec.describe "Guarantees", type: :request do
     context "アクセストークンありの場合" do
       before do
         stub_request(:get, /guarantees/)
-          .to_return(status: 200, body: [ guarantee_response ].to_json, headers: { "Content-Type" => "application/json" })
+          .to_return(status: 200, body: { guarantees: [ guarantee_response ] }.to_json, headers: { "Content-Type" => "application/json" })
       end
 
       it "200を返す" do
@@ -32,8 +32,8 @@ RSpec.describe "Guarantees", type: :request do
         expect(response).to have_http_status(:ok)
 
         data = JSON.parse(response.body)
-        expect(data).to be_an(Array)
-        expect(data.first["company_name"]).to eq("アラームボックス株式会社")
+        expect(data["guarantees"]).to be_an(Array)
+        expect(data["guarantees"].first["company_name"]).to eq("アラームボックス株式会社")
       end
     end
 

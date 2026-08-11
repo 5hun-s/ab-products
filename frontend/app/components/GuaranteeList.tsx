@@ -12,7 +12,7 @@ interface Guarantee {
 }
 
 interface GuaranteesResponse {
-  guarantees?: Guarantee[];
+  guarantees: Guarantee[];
   error?: string;
 }
 
@@ -36,15 +36,15 @@ export default function GuaranteeList() {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data: Guarantee[] | GuaranteesResponse = await res.json();
+        const data: GuaranteesResponse = await res.json();
 
         if (!res.ok) {
-          setError((!Array.isArray(data) && data.error) || "保証一覧の取得に失敗しました");
+          setError(data.error || "保証一覧の取得に失敗しました");
           setLoading(false);
           return;
         }
 
-        setGuarantees(Array.isArray(data) ? data : data.guarantees ?? []);
+        setGuarantees(data.guarantees ?? []);
       } catch {
         setError("通信エラーが発生しました");
       } finally {

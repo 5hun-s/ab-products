@@ -9,6 +9,11 @@ interface Exam {
   company_name: string;
 }
 
+interface ExamsResponse {
+  guarantee_exams: Exam[];
+  error?: string;
+}
+
 export default function ExamList() {
   const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +34,7 @@ export default function ExamList() {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await res.json();
+        const data: ExamsResponse = await res.json();
 
         if (!res.ok) {
           setError(data.error || "審査一覧の取得に失敗しました");
@@ -37,7 +42,7 @@ export default function ExamList() {
           return;
         }
 
-        setExams(Array.isArray(data) ? data : data.guarantee_exams ?? []);
+        setExams(data.guarantee_exams ?? []);
       } catch {
         setError("通信エラーが発生しました");
       } finally {

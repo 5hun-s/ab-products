@@ -1,35 +1,35 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import ExamList from "../ExamList";
+import GuaranteeList from "../GuaranteeList";
 
 global.fetch = jest.fn();
 
-describe("ExamList", () => {
+describe("GuaranteeList", () => {
   beforeEach(() => {
     localStorage.clear();
     (fetch as jest.Mock).mockClear();
   });
 
   it("未認証の場合はエラーメッセージを表示しfetchを呼ばない", async () => {
-    render(<ExamList />);
+    render(<GuaranteeList />);
     await waitFor(() => {
       expect(screen.getByText(/認証が必要です/)).toBeInTheDocument();
     });
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("ローディング後に審査一覧を表示する", async () => {
+  it("ローディング後に保証一覧を表示する", async () => {
     localStorage.setItem("alarmbox_access_token", "test-token");
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        guarantee_exams: [
-          { exam_id: 1, company_name: "株式会社テスト" },
-          { exam_id: 2, company_name: "サンプル株式会社" },
+        guarantees: [
+          { guarantee_id: 1, company_name: "株式会社テスト", guarantee_amount: 100000, status: "active" },
+          { guarantee_id: 2, company_name: "サンプル株式会社", guarantee_amount: 200000, status: "closed" },
         ],
       }),
     });
 
-    render(<ExamList />);
+    render(<GuaranteeList />);
     expect(screen.getByText("読み込み中...")).toBeInTheDocument();
 
     await waitFor(() => {
@@ -39,16 +39,16 @@ describe("ExamList", () => {
     expect(screen.getByText("1")).toBeInTheDocument();
   });
 
-  it("審査データがない場合は空メッセージを表示する", async () => {
+  it("保証データがない場合は空メッセージを表示する", async () => {
     localStorage.setItem("alarmbox_access_token", "test-token");
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => [],
+      json: async () => ({ guarantees: [] }),
     });
 
-    render(<ExamList />);
+    render(<GuaranteeList />);
     await waitFor(() => {
-      expect(screen.getByText("審査データがありません。")).toBeInTheDocument();
+      expect(screen.getByText("保証データがありません。")).toBeInTheDocument();
     });
   });
 
@@ -59,7 +59,7 @@ describe("ExamList", () => {
       json: async () => ({ error: "取得に失敗しました" }),
     });
 
-    render(<ExamList />);
+    render(<GuaranteeList />);
     await waitFor(() => {
       expect(screen.getByText("取得に失敗しました")).toBeInTheDocument();
     });
@@ -69,7 +69,7 @@ describe("ExamList", () => {
     localStorage.setItem("alarmbox_access_token", "test-token");
     (fetch as jest.Mock).mockRejectedValueOnce(new Error("Network Error"));
 
-    render(<ExamList />);
+    render(<GuaranteeList />);
     await waitFor(() => {
       expect(screen.getByText("通信エラーが発生しました")).toBeInTheDocument();
     });
@@ -79,10 +79,10 @@ describe("ExamList", () => {
     localStorage.setItem("alarmbox_access_token", "my-token");
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => [],
+      json: async () => ({ guarantees: [] }),
     });
 
-    render(<ExamList />);
+    render(<GuaranteeList />);
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
         expect.any(String),

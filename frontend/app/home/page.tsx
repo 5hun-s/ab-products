@@ -1,5 +1,6 @@
 import AlarmboxAuth from "../components/AlarmboxAuth";
 import ExamButton from "../components/ExamButton";
+import GuaranteeButton from "../components/GuaranteeButton";
 
 export default function HomePage() {
   return (
@@ -26,6 +27,14 @@ export default function HomePage() {
             連携済みの場合、審査の一覧を確認できます。
           </p>
           <ExamButton />
+        </section>
+
+        <section className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+          <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-50">保証一覧</h2>
+          <p className="mt-1 mb-4 text-sm text-zinc-500 dark:text-zinc-400">
+            連携済みの場合、保証の一覧を確認できます。
+          </p>
+          <GuaranteeButton />
         </section>
       </main>
     </div>

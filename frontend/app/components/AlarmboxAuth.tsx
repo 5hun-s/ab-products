@@ -33,6 +33,7 @@ export default function AlarmboxAuth() {
     localStorage.removeItem("alarmbox_refresh_token");
     localStorage.removeItem("alarmbox_expires_at");
     setStep(Step.Idle);
+    window.dispatchEvent(new Event("alarmbox-auth-disconnect"));
   }
 
   async function submitCode() {

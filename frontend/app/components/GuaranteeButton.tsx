@@ -16,10 +16,13 @@ export default function GuaranteeButton() {
     checkAuth();
 
     const handleAuthSuccess = () => setIsAuthenticated(true);
+    const handleAuthDisconnect = () => setIsAuthenticated(false);
     window.addEventListener("alarmbox-auth-success", handleAuthSuccess);
+    window.addEventListener("alarmbox-auth-disconnect", handleAuthDisconnect);
 
     return () => {
       window.removeEventListener("alarmbox-auth-success", handleAuthSuccess);
+      window.removeEventListener("alarmbox-auth-disconnect", handleAuthDisconnect);
     };
   }, []);
 

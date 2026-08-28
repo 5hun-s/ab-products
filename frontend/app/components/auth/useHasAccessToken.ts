@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { getAccessToken } from "./alarmbox-auth";
 
 export function useHasAccessToken(): boolean {
-  const [hasToken, setHasToken] = useState(false);
+  const [hasToken, setHasToken] = useState(
+    () => typeof window !== "undefined" && !!getAccessToken()
+  );
 
   useEffect(() => {
-    setHasToken(!!getAccessToken());
-
     const handleAuthSuccess = () => setHasToken(true);
     const handleAuthDisconnect = () => setHasToken(false);
     window.addEventListener("alarmbox-auth-success", handleAuthSuccess);

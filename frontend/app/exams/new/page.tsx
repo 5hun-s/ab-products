@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getAccessToken } from "../../components/auth/alarmbox-auth";
 
 const EXAMS_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/exams`;
 
@@ -26,7 +27,7 @@ export default function ExamNewPage() {
     setError(null);
     setSubmitting(true);
 
-    const token = localStorage.getItem("alarmbox_access_token");
+    const token = getAccessToken();
     if (!token) {
       setError("認証が必要です。Top画面からアラームボックス連携を行ってください。");
       setSubmitting(false);

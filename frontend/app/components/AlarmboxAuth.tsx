@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { Step, isAuthenticated } from "./alarmbox-auth";
+import { Step, isAuthenticated } from "./auth/alarmbox-auth";
 
 const ALARMBOX_AUTH_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox`;
 const CALLBACK_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/auth/alarmbox/callback`;

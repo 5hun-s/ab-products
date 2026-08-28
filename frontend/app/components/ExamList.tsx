@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
+import DataTable from "./ui/DataTable";
+import { useAuthorizedResource } from "./auth/useAuthorizedResource";
 
 const EXAMS_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/exams`;
 
@@ -11,47 +13,18 @@ interface Exam {
 
 interface ExamsResponse {
   guarantee_exams: Exam[];
-  error?: string;
 }
 
 export default function ExamList() {
-  const [exams, setExams] = useState<Exam[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchExams() {
-      const token = localStorage.getItem("alarmbox_access_token");
-      if (!token) {
-        setError("認証が必要です。Top画面からアラームボックス連携を行ってください。");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(EXAMS_URL, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data: ExamsResponse = await res.json();
-
-        if (!res.ok) {
-          setError(data.error || "審査一覧の取得に失敗しました");
-          setLoading(false);
-          return;
-        }
-
-        setExams(data.guarantee_exams ?? []);
-      } catch {
-        setError("通信エラーが発生しました");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchExams();
-  }, []);
+  const extractItems = useCallback(
+    (data: unknown) => (data as ExamsResponse).guarantee_exams ?? [],
+    []
+  );
+  const { items: exams, loading, error } = useAuthorizedResource<Exam>(
+    EXAMS_URL,
+    extractItems,
+    "審査一覧の取得に失敗しました"
+  );
 
   if (loading) {
     return <p className="text-zinc-500">読み込み中...</p>;
@@ -66,26 +39,13 @@ export default function ExamList() {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-zinc-200 dark:border-zinc-700">
-            <th className="px-4 py-3 text-left font-semibold text-zinc-700 dark:text-zinc-300">ID</th>
-            <th className="px-4 py-3 text-left font-semibold text-zinc-700 dark:text-zinc-300">企業名</th>
-          </tr>
-        </thead>
-        <tbody>
-          {exams.map((exam) => (
-            <tr
-              key={exam.exam_id}
-              className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-            >
-              <td className="px-4 py-3 text-zinc-900 dark:text-zinc-100">{exam.exam_id}</td>
-              <td className="px-4 py-3 text-zinc-900 dark:text-zinc-100">{exam.company_name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      items={exams}
+      rowKey={(exam) => exam.exam_id}
+      columns={[
+        { header: "ID", render: (exam) => exam.exam_id },
+        { header: "企業名", render: (exam) => exam.company_name },
+      ]}
+    />
   );
 }

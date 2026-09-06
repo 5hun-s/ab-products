@@ -50,4 +50,51 @@ RSpec.describe "Guarantees", type: :request do
       end
     end
   end
+
+  describe "POST /guarantees" do
+    let!(:guarantee_params) do
+      {
+        guarantee: {
+          exam_id: 12345,
+          guarantee_amount_hope: 1000000,
+          guarantee_start_at: "2023-03-27",
+          guarantee_end_at: "2023-04-27",
+          auto_increment: false,
+          end_of_guarantee_request: false
+        }
+      }
+    end
+
+    context "アクセストークンなしの場合" do
+      it "401を返す" do
+        post "/guarantees", params: guarantee_params
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "アクセストークンありの場合" do
+      before do
+        stub_request(:post, /guarantees/)
+          .to_return(status: 201, body: guarantee_response.to_json, headers: { "Content-Type" => "application/json" })
+      end
+
+      it "201を返す" do
+        post "/guarantees", params: guarantee_params, headers: auth_header
+        expect(response).to have_http_status(:created)
+      end
+    end
+
+    context "外部APIがエラーを返す場合" do
+      before do
+        stub_request(:post, /guarantees/)
+          .to_return(status: 422, body: { message: "バリデーションエラー" }.to_json, headers: { "Content-Type" => "application/json" })
+      end
+
+      it "502を返す" do
+        post "/guarantees", params: guarantee_params, headers: auth_header
+        expect(response).to have_http_status(:bad_gateway)
+        expect(JSON.parse(response.body)["error"]).to eq("バリデーションエラー")
+      end
+    end
+  end
 end

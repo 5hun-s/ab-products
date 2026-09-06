@@ -1,14 +1,18 @@
 "use client";
 
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 import DataTable from "./ui/DataTable";
 import { useAuthorizedResource } from "./auth/useAuthorizedResource";
 
 const EXAMS_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/exams`;
 
+const GUARANTEE_AVAILABLE_STATUS = "回答済み（保証可能）";
+
 interface Exam {
   exam_id: number;
   company_name: string;
+  status: string;
 }
 
 interface ExamsResponse {
@@ -16,6 +20,7 @@ interface ExamsResponse {
 }
 
 export default function ExamList() {
+  const router = useRouter();
   const extractItems = useCallback(
     (data: unknown) => (data as ExamsResponse).guarantee_exams ?? [],
     []
@@ -45,6 +50,20 @@ export default function ExamList() {
       columns={[
         { header: "ID", render: (exam) => exam.exam_id },
         { header: "企業名", render: (exam) => exam.company_name },
+        { header: "ステータス", render: (exam) => exam.status },
+        {
+          header: "操作",
+          render: (exam) =>
+            exam.status === GUARANTEE_AVAILABLE_STATUS ? (
+              <button
+                type="button"
+                onClick={() => router.push(`/guarantees/new?exam_id=${exam.exam_id}`)}
+                className="inline-flex h-8 items-center justify-center rounded-lg bg-green-600 px-3 text-xs font-medium text-white transition-colors hover:bg-green-700"
+              >
+                保証依頼
+              </button>
+            ) : null,
+        },
       ]}
     />
   );

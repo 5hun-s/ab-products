@@ -14,6 +14,12 @@ export default function GuaranteesPage() {
           </div>
           <div className="flex items-center gap-4">
             <Link
+              href="/guarantees/new"
+              className="inline-flex h-9 items-center justify-center rounded-lg bg-green-600 px-4 text-sm font-medium text-white transition-colors hover:bg-green-700"
+            >
+              + 保証依頼
+            </Link>
+            <Link
               href="/home"
               className="text-sm text-zinc-500 hover:text-zinc-900 hover:underline dark:text-zinc-400 dark:hover:text-zinc-50"
             >

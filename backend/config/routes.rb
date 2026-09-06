@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get "exams", to: "exam#index"
   post "exams", to: "exam#create"
   get "guarantees", to: "guarantee#index"
+  post "guarantees", to: "guarantee#create"
 
   # Defines the root path route ("/")
   # root "posts#index"

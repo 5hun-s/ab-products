@@ -1,30 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAccessToken } from "../../components/auth/alarmbox-auth";
 
 const GUARANTEES_URL = `${process.env.NEXT_PUBLIC_BROWSER_API_URL}/guarantees`;
 
+function getInitialExamId(): string {
+  if (typeof window === "undefined") {
+    return "";
+  }
+  return new URLSearchParams(window.location.search).get("exam_id") ?? "";
+}
+
 export default function GuaranteeNewPage() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    exam_id: "",
+  const [form, setForm] = useState(() => ({
+    exam_id: getInitialExamId(),
     guarantee_amount_hope: "",
     guarantee_start_at: "",
     guarantee_end_at: "",
-  });
+  }));
   const [autoIncrement, setAutoIncrement] = useState(false);
   const [endOfGuaranteeRequest, setEndOfGuaranteeRequest] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const examId = new URLSearchParams(window.location.search).get("exam_id");
-    if (examId) {
-      setForm((prev) => ({ ...prev, exam_id: examId }));
-    }
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
